@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 				angulo = angulo.setScale(0,BigDecimal.ROUND_HALF_UP);
 				Log.v("angulo : ",angulo+"");
 				
-				BigDecimal fuerza = new Formulas(getApplicationContext()).initialShotVelocity(0, anguloo, anguloo, distanciaa, 2, 1);
+				BigDecimal fuerza = new Formulas(getApplicationContext()).initialShotVelocity(0, anguloo, force, distanciaa, 2, 1);
 				fuerza = fuerza.multiply(new BigDecimal(0.004332712));
 				Log.v("fuerza : ",fuerza.setScale(2, BigDecimal.ROUND_HALF_UP)+"");
 			}
