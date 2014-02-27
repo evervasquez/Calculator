@@ -40,14 +40,20 @@ public class MainActivity extends Activity {
 				int distanciaa = Integer.parseInt(distancia.getText().toString());
 				int anguloo = Integer.parseInt(angulo.getText().toString());
 				
-				BigDecimal res = new Formulas(getApplicationContext()).angleInRadians(0, anguloo, force, distanciaa, 2, 1);
+				BigDecimal res = new Formulas(getApplicationContext()).angleInRadians(16, anguloo, force, distanciaa, 2, 1);
 				BigDecimal angulo = new BigDecimal( Math.toDegrees(Math.asin(res.doubleValue())));
 				angulo = angulo.setScale(0,BigDecimal.ROUND_HALF_UP);
 				Log.v("angulo : ",angulo+"");
 				
-				BigDecimal fuerza = new Formulas(getApplicationContext()).initialShotVelocity(0, anguloo, force, distanciaa, 2, 1);
+				BigDecimal fuerza = new Formulas(getApplicationContext()).initialShotVelocity(16, anguloo, force, distanciaa, 2, 1);
 				fuerza = fuerza.multiply(new BigDecimal(0.004332712));
-				Log.v("fuerza : ",fuerza.setScale(2, BigDecimal.ROUND_HALF_UP)+"");
+				fuerza = fuerza.setScale(2, BigDecimal.ROUND_HALF_UP);
+				Log.v("fuerza : ",fuerza+"");
+				
+				Toast.makeText(getApplicationContext(), "angulo : "+angulo+" - Fuerza : "+fuerza, Toast.LENGTH_LONG).show();
+				
+				BigDecimal pruebas = new Conversiones(getApplicationContext()).y_displacement(16);
+				resultado.setText(pruebas+"");
 			}
 		});
 		

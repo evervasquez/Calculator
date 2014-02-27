@@ -21,7 +21,7 @@ public class Conversiones {
 	public BigDecimal x_displacement(int distancia) {
 		BigDecimal xdisplacement = null;
 		xdisplacement = new BigDecimal(distancia).divide(new BigDecimal(20),MathContext.DECIMAL64);
-		xdisplacement = xdisplacement.multiply(Variables.WIDTH);
+		xdisplacement = xdisplacement.multiply(Variables.WIDTH,MathContext.DECIMAL64);
 		return xdisplacement;
 	}
 
@@ -29,7 +29,7 @@ public class Conversiones {
 	public BigDecimal y_displacement(int desnivel) {
 		BigDecimal ydisplacement = null;
 		ydisplacement = new BigDecimal(desnivel).divide(new BigDecimal(16),MathContext.DECIMAL64);
-		ydisplacement = ydisplacement.divide(Variables.HEIGH);
+		ydisplacement = ydisplacement.multiply(Variables.HEIGH);
 		return ydisplacement;
 	}
 	
@@ -152,8 +152,7 @@ public class Conversiones {
                 // infinitos y la excepcion generada en tiempo de ejecucion
                 // "Non-terminating decimal expansion no exact representable
                 // decimal result" y 10 decimales
-                raiz = raiz.divide(raizTemp.multiply(BigDecimal.valueOf(2)), 10,
-					RoundingMode.HALF_UP);
+                raiz = raiz.divide(raizTemp.multiply(BigDecimal.valueOf(2)), 10,RoundingMode.HALF_UP);
                 // raiz - Factor b
                 raiz = raizTemp.subtract(raiz);
         }
