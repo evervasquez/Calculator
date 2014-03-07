@@ -1,42 +1,50 @@
 package pe.gunbound.calculatorgb;
 
-import java.math.BigDecimal;
-
 import pe.gunbound.calculatorgb.basedatos.bd;
-import pe.gunbound.calculatorgb.operaciones.Conversiones;
-import pe.gunbound.calculatorgb.operaciones.Formulas;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+import antistatic.spinnerwheel.AbstractWheel;
+import antistatic.spinnerwheel.OnWheelChangedListener;
+import antistatic.spinnerwheel.OnWheelScrollListener;
+import antistatic.spinnerwheel.adapters.NumericWheelAdapter;
+
 
 public class MainActivity extends Activity {
-	private TextView resultado;
 	private Button calculate;
-	private EditText angulo,distancia;
+	private AbstractWheel sp_distancia, sp_desnivel;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 		new bd(getApplicationContext());
 		
-		calculate = (Button) findViewById(R.id.btn_calcular);
-		resultado = (TextView) findViewById(R.id.lb_respuesta);
-		angulo = (EditText) findViewById(R.id.txt_angulo);
-		distancia = (EditText) findViewById(R.id.txt_distancia);
+		sp_distancia = (AbstractWheel) findViewById(R.id.txt_distancia);
+        NumericWheelAdapter distanciaAdapter = new NumericWheelAdapter(this, 0, 40, "%02d");
+        distanciaAdapter.setItemResource(R.layout.wheel_text_centered_dark_back);
+        distanciaAdapter.setItemTextResource(R.id.text);
+        sp_distancia.setViewAdapter(distanciaAdapter);
+        
+        sp_desnivel = (AbstractWheel) findViewById(R.id.txt_desnivel);
+        NumericWheelAdapter desnivelAdapter = new NumericWheelAdapter(this, 0, 16, "%02d");
+        desnivelAdapter.setItemResource(R.layout.wheel_text_centered_dark_back);
+        desnivelAdapter.setItemTextResource(R.id.text);
+        sp_desnivel.setViewAdapter(desnivelAdapter);
+        
+        calculate = (Button) findViewById(R.id.btn_calcular);
 		
 		calculate.setOnClickListener(new OnClickListener() {		
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				int force = 20;
+				int distancia = sp_distancia.getCurrentItem();
+				int desnivel = sp_desnivel.getCurrentItem();
+				
+				/*int force = 20;
 				int distanciaa = Integer.parseInt(distancia.getText().toString());
 				int anguloo = Integer.parseInt(angulo.getText().toString());
 				
@@ -53,11 +61,13 @@ public class MainActivity extends Activity {
 				Toast.makeText(getApplicationContext(), "angulo : "+angulo+" - Fuerza : "+fuerza, Toast.LENGTH_LONG).show();
 				
 				BigDecimal pruebas = new Conversiones(getApplicationContext()).y_displacement(16);
-				resultado.setText(pruebas+"");
+				resultado.setText(pruebas+""); */
+				Toast.makeText(getApplicationContext(), "Distancia: "+distancia+" Desnivel: "+desnivel, Toast.LENGTH_LONG).show();
 			}
 		});
+		initWheel(R.id.passw_1);
 		
-	}
+	}	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,5 +75,46 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
+    private void initWheel(int id) {
+        AbstractWheel wheel = getWheel(id);
+        wheel.setViewAdapter(new NumericWheelAdapter(this, 0, 26));
+        wheel.setCurrentItem(0);
+        wheel.addChangingListener(changedListener);
+        wheel.addScrollingListener(scrolledListener);
+        wheel.setCyclic(true);
+        wheel.setInterpolator(new AnticipateOvershootInterpolator());
+    }
+    
+    // Wheel changed listener
+    private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
+        public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
+            if (!wheelScrolled) {
+              //updateStatus();
+            }
+        }
+    };
+    
+    // Wheel scrolled flag
+    private boolean wheelScrolled = false;
+    
+    // Wheel scrolled listener
+    OnWheelScrollListener scrolledListener = new OnWheelScrollListener() {
+        public void onScrollingStarted(AbstractWheel wheel) {
+            wheelScrolled = true;
+        }
+        public void onScrollingFinished(AbstractWheel wheel) {
+            wheelScrolled = false;
+           // updateStatus();
+        }
+    };
+    
+    /**
+     * Returns spinnerwheel by Id
+     * @param id the spinnerwheel Id
+     * @return the spinnerwheel with passed Id
+     */
+    private AbstractWheel getWheel(int id) {
+        return (AbstractWheel) findViewById(id);
+    }
 }
